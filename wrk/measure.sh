@@ -12,7 +12,7 @@ if [ "$SUBJECT" = "" ] ; then
 fi
 
 if [ "$SUBJECT" = "zig" ] ; then
-    zig build -Drelease-fast wrk > /dev/null
+    zig build wrk > /dev/null
     ./zig-out/bin/wrk &
     PID=$!
     URL=http://127.0.0.1:3000
@@ -27,6 +27,20 @@ fi
 
 if [ "$SUBJECT" = "python" ] ; then
     python wrk/python/main.py &
+    PID=$!
+    URL=http://127.0.0.1:8080
+fi
+
+if [ "$SUBJECT" = "fastapi" ] ; then
+    cd wrk/fastapi
+    ./venv/bin/uvicorn --log-level error --no-access-log --workers 4 --loop uvloop --port 8080 fastapi_demo:app &
+    PID=$!
+    URL=http://127.0.0.1:8080
+fi
+
+if [ "$SUBJECT" = "express" ] ; then
+    cd wrk/express
+    node index.js &
     PID=$!
     URL=http://127.0.0.1:8080
 fi

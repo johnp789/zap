@@ -1,2 +1,6 @@
 zig-out/
 zig-cache/
+wrk/express/node_modules
+wrk/fastapi/venv
+wrk/go/main
+**/__pycache__
