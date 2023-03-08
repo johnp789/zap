@@ -52,6 +52,12 @@ if [ "$SUBJECT" = "rust" ] ; then
     URL=http://127.0.0.1:7878
 fi
 
+if [ "$SUBJECT" = "bun" ] ; then
+    cd wrk/bun
+    bun index.js &
+    PID=$!
+    URL=http://127.0.0.1:8080
+fi
 sleep 1
 echo "========================================================================"
 echo "                          $SUBJECT"

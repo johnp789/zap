@@ -1,10 +1,13 @@
 # ⚡blazingly slow⚡
 
-I tried out a few more popular frameworks, Uvicorn for Python and Express for
-Node.js.  They weren't blazingly fast, but at least Uvicorn with uvloop was
-several times faster than the built-in Python HTTP server.
+I tried out a few more popular frameworks, FastAPI+Uvicorn for Python and
+Express for Node.js.  They weren't blazingly fast, but at least FastAPI with
+uvloop was several times faster than the built-in Python HTTP server.
 
-## Uvicorn code
+Updated March 8, 2023: adding bun.  Results for bun are widely varying,
+from 174k req/s to 270k req/s.
+
+## FastAPI code
 ```python
 from fastapi import FastAPI, Response
 
@@ -30,6 +33,16 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+```
+
+## Bun code
+```javascript
+export default {
+    port: 8080,
+    fetch(request) {
+        return new Response("Hello from Bun!");
+    },
+};
 ```
 
 ## wrk output
@@ -218,6 +231,40 @@ Running 10s test @ http://127.0.0.1:8080
   96393 requests in 10.08s, 22.43MB read
 Requests/sec:   9564.82
 Transfer/sec:      2.23MB
+$ wrk/measure.sh bun
+========================================================================
+                          bun
+========================================================================
+Running 10s test @ http://127.0.0.1:8080
+  4 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.00ms    1.10ms  34.59ms   98.67%
+    Req/Sec    51.28k     5.29k   59.13k    65.00%
+  Latency Distribution
+     50%    1.82ms
+     75%    2.12ms
+     90%    2.38ms
+     99%    3.23ms
+  2040171 requests in 10.05s, 254.88MB read
+Requests/sec: 203006.65
+Transfer/sec:     25.36MB
+$ wrk/measure.sh bun
+========================================================================
+                          bun
+========================================================================
+Running 10s test @ http://127.0.0.1:8080
+  4 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.76ms  362.14us   5.97ms   77.40%
+    Req/Sec    56.95k     4.64k   68.64k    68.75%
+  Latency Distribution
+     50%    1.63ms
+     75%    1.93ms
+     90%    2.35ms
+     99%    2.90ms
+  2266866 requests in 10.06s, 283.20MB read
+Requests/sec: 225342.72
+Transfer/sec:     28.15MB
 ```
 
 ## test machine
